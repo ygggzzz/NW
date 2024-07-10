@@ -52,15 +52,19 @@ class Mlp(Module):
         super(Mlp,self).__init__()
 
         # 隐藏层
-        self.hidden1 = Linear(inputs,10)
+        self.hidden1 = Linear(inputs,50)
         xavier_uniform_(self.hidden1.weight)
         self.act1 = ReLU()
 
-        self.hidden2 = Linear(10,5)
+        self.hidden2 = Linear(50,100)
         xavier_uniform_(self.hidden2.weight)
         self.act2 = ReLU()
 
-        self.hidden3 = Linear(5,outputs)
+        self.hidden3 = Linear(100, 50)
+        xavier_uniform_(self.hidden2.weight)
+        self.act3 = ReLU()
+
+        self.hidden4 = Linear(50,outputs)
         xavier_uniform_(self.hidden3.weight)
 
     def forward(self,X):
@@ -69,13 +73,15 @@ class Mlp(Module):
         X = self.hidden2(X)
         X = self.act2(X)
         X = self.hidden3(X)
+        X = self.act3(X)
+        X = self.hidden4(X)
         return X
 
 def train(train_dl,model,epochs=1000):
     #损失函数
     criterion = MSELoss()
     #优化器 SGD:随机梯度下降 parameters：要优化的模型参数 lr:learningrate momentnum：动量
-    optimizer = SGD(model.parameters(), lr = 0.08, momentum=0.9)
+    optimizer = SGD(model.parameters(), lr = 0.15, momentum=0.9)
 
     for epoch in range(epochs):
         #枚举minibatches
